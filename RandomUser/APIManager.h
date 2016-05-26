@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @interface MRUser : NSObject
-@property (nonatomic, strong) NSString *firstname;
-@property (nonatomic, strong) NSString *lastname;
-@property (nonatomic, strong) NSString *username;
-@property (nonatomic, strong) NSString *avatar;
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
+@property (nullable, nonatomic, strong) NSString *firstname;
+@property (nullable, nonatomic, strong) NSString *lastname;
+@property (nullable, nonatomic, strong) NSString *username;
+@property (nullable, nonatomic, strong) NSString *avatar;
+- (nonnull instancetype)initWithDictionary:(nonnull NSDictionary *)dict;
+- (nullable NSURL *)avatarURL;
 @end
 
 
@@ -26,7 +27,7 @@
  </dict>
  */
 @interface APIManager : NSObject
-- (void)generateRandomUserWithComplete:(void (^)(MRUser *user, NSError *error))complete;
+- (void)generateRandomUserWithComplete:(nullable void (^)(MRUser * _Nonnull user, NSError * _Nullable error))complete;
 @end
 
 
@@ -46,7 +47,7 @@
  *
  *  @param complete called when async operation finished
  */
-- (void)loadUsersWithComplete:(void (^)(NSError *error))complete;
+- (void)loadUsersWithComplete:(nullable void (^)(NSError * _Nullable error))complete;
 
 /**
  *  Add user
@@ -54,7 +55,7 @@
  *  @param user     user object
  *  @param complete called when async operation finished
  */
-- (void)addUser:(MRUser *)user complete:(void (^)(NSError *error))complete;
+- (void)addUser:(nonnull MRUser *)user complete:(nullable void (^)(NSError * _Nullable error))complete;
 
 /**
  *  Get user object at index
@@ -63,5 +64,5 @@
  *
  *  @return user object
  */
-- (MRUser *)userAtIndex:(NSUInteger)index;
+- (nullable MRUser *)userAtIndex:(NSUInteger)index;
 @end

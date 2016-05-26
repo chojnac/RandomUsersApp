@@ -9,6 +9,9 @@
 #import "ViewController.h"
 #import "APIManager.h"
 #import "UserViewController.h"
+#import "UserListTableViewCell.h"
+
+NSString * const kUserListTableCellId = @"Cell1";
 
 @interface ViewController ()
 @property (nonatomic, strong) UserDataManager *userDataManager;
@@ -20,6 +23,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:NSStringFromClass([UserListTableViewCell class]) bundle:nil] forCellReuseIdentifier:kUserListTableCellId];
+    
     _userDataManager = [[UserDataManager alloc] init];
     _apiManager = [[APIManager alloc] init];
     
@@ -41,12 +47,17 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell1"];
+    UserListTableViewCell *cell = (UserListTableViewCell *)[tableView dequeueReusableCellWithIdentifier:kUserListTableCellId];
     MRUser *user = [self.userDataManager userAtIndex:indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstname, user.lastname];
-    cell.detailTextLabel.text = user.username;
+    [cell configure:user];
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    MRUser *user = [self.userDataManager userAtIndex:indexPath.row];
+    [self performSegueWithIdentifier:@"details" sender:user];
+}
+
 
 #pragma mark - Actions
 
@@ -65,10 +76,9 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if([sender isKindOfClass:[UITableViewCell class]] && [segue.destinationViewController isKindOfClass:[UserViewController class]]) {
+    if([sender isKindOfClass:[MRUser class]] && [segue.destinationViewController isKindOfClass:[UserViewController class]]) {
         UserViewController *vc = segue.destinationViewController;
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        MRUser *user = [self.userDataManager userAtIndex:indexPath.row];
+        MRUser *user = sender;
         vc.user = user;
     }
 }

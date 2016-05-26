@@ -15,10 +15,14 @@
     if (self) {
         _firstname = dict[@"name"][@"first"];
         _lastname = dict[@"name"][@"last"];
-        _username = dict[@"username"];
+        _username = dict[@"login"][@"username"];
         _avatar = dict[@"picture"][@"thumbnail"];
     }
     return self;
+}
+
+- (NSURL *)avatarURL {
+    return self.avatar ? [NSURL URLWithString:self.avatar] : nil;
 }
 
 @end
@@ -48,7 +52,7 @@
             NSArray *results = dic[@"results"];
             if ([results count] > 0) {
                 NSDictionary *firstItem = results.firstObject;
-                MRUser *user = [[MRUser alloc] initWithDictionary:firstItem[@"user"]];
+                MRUser *user = [[MRUser alloc] initWithDictionary:firstItem];
                 complete ? complete(user, nil) : nil;
                 return;
             }
